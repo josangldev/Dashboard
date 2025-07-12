@@ -8,7 +8,7 @@ Este proyecto es una aplicación web moderna y responsive para gestionar tareas 
 
 ## 📸 Capturas de pantalla
 
-![Captura de pantalla del dashboard principal](docs/screen-main.png)
+![Captura de pantalla del dashboard principal](docs/screen-dash.png)
 
 ---
 
