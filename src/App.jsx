@@ -8,6 +8,7 @@ import ThemeToggle from "./components/ThemeToggle";
 import TaskList from "./components/TaskList";
 import ProductivityChart from "./components/ProductivityChart";
 import SkeletonLoader from "./components/SkeletonLoader";
+import WeekNavigation from "./components/WeekNavigation";
 import { useTranslation } from 'react-i18next';
 
 function Toast({ message, onClose }) {
@@ -114,11 +115,7 @@ export default function App() {
         {toast && <Toast message={t(toast)} onClose={() => setToast(null)} />}
         <div className="flex flex-col gap-8 w-full max-w-md sm:gap-12 sm:max-w-4xl mx-auto justify-center items-center">
           <div className={"w-full rounded-2xl shadow-2xl p-4 sm:p-12 " + (darkMode ? "bg-gray-800" : "bg-white") + " max-w-xs sm:max-w-2xl"}>
-            <div className="flex items-center justify-center gap-4 mb-2">
-              <button onClick={() => setWeekOffset(weekOffset - 1)} className="btn-week-nav" aria-label="Semana anterior">&#8592;</button>
-              <span className="text-sm font-semibold">{format(weekStart, 'd MMM', { locale: es })} - {format(addDays(weekStart, 6), 'd MMM', { locale: es })}</span>
-              <button onClick={() => setWeekOffset(weekOffset + 1)} className="btn-week-nav" aria-label="Semana siguiente">&#8594;</button>
-            </div>
+            <WeekNavigation weekStart={weekStart} weekOffset={weekOffset} setWeekOffset={setWeekOffset} />
             <div className="flex justify-between items-center mb-4 sm:mb-6">
               <h1 className={"text-2xl sm:text-5xl font-extrabold text-center flex-1 mb-2 sm:mb-2 " + (darkMode ? "text-white" : "")}>{t('taskList')}</h1>
             </div>
@@ -158,21 +155,13 @@ export default function App() {
             )}
           </div>
           <div className="w-full rounded-2xl shadow-2xl p-4 sm:p-12 bg-white dark:bg-gray-800 max-w-xs sm:max-w-2xl">
-            <div className="flex items-center justify-center gap-4 mb-2">
-              <button onClick={() => setWeekOffset(weekOffset - 1)} className="btn-week-nav" aria-label="Semana anterior">&#8592;</button>
-              <span className="text-sm font-semibold">{format(weekStart, 'd MMM', { locale: es })} - {format(addDays(weekStart, 6), 'd MMM', { locale: es })}</span>
-              <button onClick={() => setWeekOffset(weekOffset + 1)} className="btn-week-nav" aria-label="Semana siguiente">&#8594;</button>
-            </div>
+            <WeekNavigation weekStart={weekStart} weekOffset={weekOffset} setWeekOffset={setWeekOffset} />
             <h2 className="text-xl sm:text-4xl font-extrabold mb-4 sm:mb-6 text-center dark:text-white">{t('productivity')}</h2>
             {loading ? <SkeletonLoader height={180} /> : <ProductivityChart data={chartData} />}
           </div>
           <div className="w-full rounded-2xl shadow-2xl p-4 sm:p-12 bg-white dark:bg-gray-800 max-w-xs sm:max-w-2xl">
             <h2 className="text-xl sm:text-4xl font-extrabold mb-4 sm:mb-6 text-center dark:text-white">{t('weekView')}</h2>
-            <div className="flex items-center justify-center gap-4 mb-2">
-              <button onClick={() => setWeekOffset(weekOffset - 1)} className="btn-week-nav" aria-label="Semana anterior">&#8592;</button>
-              <span className="text-sm font-semibold">{format(weekStart, 'd MMM', { locale: es })} - {format(addDays(weekStart, 6), 'd MMM', { locale: es })}</span>
-              <button onClick={() => setWeekOffset(weekOffset + 1)} className="btn-week-nav" aria-label="Semana siguiente">&#8594;</button>
-            </div>
+            <WeekNavigation weekStart={weekStart} weekOffset={weekOffset} setWeekOffset={setWeekOffset} />
             {isMobile ? (
               <div className="flex items-center justify-center w-full">
                 <button

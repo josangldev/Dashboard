@@ -32,7 +32,7 @@ export function useTasks() {
       const cleanedTasks = cleanDuplicateIds(tasks);
       setTasks(cleanedTasks);
     }
-  }, []);
+  }, [tasks, setTasks]);
 
   const addTask = (title, dateId) => {
     const id = dateId !== undefined ? dateId + Math.random() : Date.now();
