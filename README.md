@@ -208,15 +208,6 @@ Las contribuciones son bienvenidas. Por favor, abre un issue o un pull request p
 
 ## 📝 Changelog
 
-### v1.1.0 - Optimización con IA
-- 🤖 Refactoring asistido por IA
-- 🔧 Corrección de errores de linting
-- 📝 Documentación generada con IA
-- 🧹 Eliminación de código duplicado
-- 🎯 Creación de componentes reutilizables
-- 📊 Mejora de la arquitectura del proyecto
-
-### v1.0.0
 - ✅ Gestión completa de tareas
 - ✅ Visualización de productividad
 - ✅ Modo oscuro
