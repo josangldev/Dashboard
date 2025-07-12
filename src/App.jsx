@@ -38,19 +38,16 @@ export default function App() {
   const { t, i18n } = useTranslation();
   const [showWelcome, setShowWelcome] = useState(() => !localStorage.getItem('welcomeSeen'));
 
-  // Detectar si es móvil
   const isMobile = window.innerWidth < 640;
   const [mobileDayIndex, setMobileDayIndex] = useState(0);
 
   useEffect(() => { if (!showWelcome) localStorage.setItem('welcomeSeen', '1'); }, [showWelcome]);
 
-  // Loader simulado
   useEffect(() => {
     const t = setTimeout(() => setLoading(false), 1200);
     return () => clearTimeout(t);
   }, []);
 
-  // Lógica tareas y productividad
   const weekStart = useMemo(() => {
     const now = new Date();
     return addDays(startOfWeek(now, { weekStartsOn: 1 }), weekOffset * 7);
@@ -69,7 +66,6 @@ export default function App() {
   const selectedDayDone = selectedDayTasks.filter(t => t.done).length;
   const progress = selectedDayTasks.length === 0 ? 0 : Math.round((selectedDayDone / selectedDayTasks.length) * 100);
 
-  // Cambiar selectedDay para que siempre esté dentro de la semana mostrada
   useEffect(() => {
     const weekDays = Array.from({ length: 7 }, (_, i) => addDays(weekStart, i));
     const isSelectedInWeek = weekDays.some(day => isSameDay(day, selectedDay));
@@ -78,7 +74,6 @@ export default function App() {
     }
   }, [weekStart, selectedDay]);
 
-  // Toast y handlers
   const showToast = (msg) => setToast(msg);
   const handleAddTask = () => {
     if (input.trim() === "") return;
@@ -96,10 +91,8 @@ export default function App() {
   return (
     <div className={"flex flex-col min-h-screen " + (darkMode ? "bg-gray-900" : "bg-gray-50") }>
       <div className="flex-1 flex flex-col items-center justify-start py-6 px-2 sm:px-0">
-        {/* Header */}
         <header className={"w-full flex items-center justify-between px-4 sm:px-8 py-4 shadow-md mb-8 " + (darkMode ? "bg-gray-800" : "bg-white") + " fixed top-0 left-0 z-40"} style={{height: 72}}>
           <div className="flex-1 flex items-center gap-2 justify-start">
-            {/* Selector de idioma a la izquierda del título */}
             <button onClick={() => i18n.changeLanguage('es')} className={"px-2 py-1 rounded text-xs font-semibold " + (i18n.language === 'es' ? 'bg-blue-500 text-white' : 'bg-gray-200 text-gray-700 dark:bg-gray-700 dark:text-white')}>ES</button>
             <button onClick={() => i18n.changeLanguage('en')} className={"px-2 py-1 rounded text-xs font-semibold " + (i18n.language === 'en' ? 'bg-blue-500 text-white' : 'bg-gray-200 text-gray-700 dark:bg-gray-700 dark:text-white')}>EN</button>
           </div>
@@ -108,9 +101,7 @@ export default function App() {
             <ThemeToggle darkMode={darkMode} setDarkMode={setDarkMode} />
           </div>
         </header>
-        {/* Espacio para el header fijo */}
         <div style={{height: 72}}></div>
-        {/* Mensaje de bienvenida/tutorial */}
         {showWelcome && (
           <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-40 animate-fade-in">
             <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-2xl p-8 max-w-xs w-full flex flex-col items-center animate-fade-in">
@@ -122,9 +113,7 @@ export default function App() {
         )}
         {toast && <Toast message={t(toast)} onClose={() => setToast(null)} />}
         <div className="flex flex-col gap-8 w-full max-w-md sm:gap-12 sm:max-w-4xl mx-auto justify-center items-center">
-          {/* Bloque Lista de Tareas */}
           <div className={"w-full rounded-2xl shadow-2xl p-4 sm:p-12 " + (darkMode ? "bg-gray-800" : "bg-white") + " max-w-xs sm:max-w-2xl"}>
-            {/* Flechas y rango de semana */}
             <div className="flex items-center justify-center gap-4 mb-2">
               <button onClick={() => setWeekOffset(weekOffset - 1)} className="btn-week-nav" aria-label="Semana anterior">&#8592;</button>
               <span className="text-sm font-semibold">{format(weekStart, 'd MMM', { locale: es })} - {format(addDays(weekStart, 6), 'd MMM', { locale: es })}</span>
@@ -133,7 +122,6 @@ export default function App() {
             <div className="flex justify-between items-center mb-4 sm:mb-6">
               <h1 className={"text-2xl sm:text-5xl font-extrabold text-center flex-1 mb-2 sm:mb-2 " + (darkMode ? "text-white" : "")}>{t('taskList')}</h1>
             </div>
-            {/* Selector de día de la semana dentro de la caja, siempre como botones, pero adaptados a móvil */}
             <div className="flex justify-center w-full gap-1 mb-4 sm:mb-6 overflow-x-auto scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-transparent">
               {daysOfWeek.map(day => (
                 <button
@@ -169,9 +157,7 @@ export default function App() {
               />
             )}
           </div>
-          {/* Bloque Productividad semanal */}
           <div className="w-full rounded-2xl shadow-2xl p-4 sm:p-12 bg-white dark:bg-gray-800 max-w-xs sm:max-w-2xl">
-            {/* Flechas y rango de semana */}
             <div className="flex items-center justify-center gap-4 mb-2">
               <button onClick={() => setWeekOffset(weekOffset - 1)} className="btn-week-nav" aria-label="Semana anterior">&#8592;</button>
               <span className="text-sm font-semibold">{format(weekStart, 'd MMM', { locale: es })} - {format(addDays(weekStart, 6), 'd MMM', { locale: es })}</span>
@@ -180,7 +166,6 @@ export default function App() {
             <h2 className="text-xl sm:text-4xl font-extrabold mb-4 sm:mb-6 text-center dark:text-white">{t('productivity')}</h2>
             {loading ? <SkeletonLoader height={180} /> : <ProductivityChart data={chartData} />}
           </div>
-          {/* Bloque Vista semanal */}
           <div className="w-full rounded-2xl shadow-2xl p-4 sm:p-12 bg-white dark:bg-gray-800 max-w-xs sm:max-w-2xl">
             <h2 className="text-xl sm:text-4xl font-extrabold mb-4 sm:mb-6 text-center dark:text-white">{t('weekView')}</h2>
             <div className="flex items-center justify-center gap-4 mb-2">
@@ -239,14 +224,11 @@ export default function App() {
           </div>
         </div>
       </div>
-      {/* Footer */}
       <footer className={"w-full flex items-center justify-between px-4 sm:px-8 py-3 bg-gray-100 dark:bg-gray-800 border-t border-gray-200 dark:border-gray-700"}>
-        {/* GitHub */}
         <a href="https://github.com/josangldev" target="_blank" rel="noopener noreferrer" className="group">
           <svg className="w-7 h-7 fill-gray-600 dark:fill-gray-300 group-hover:fill-blue-500 transition" viewBox="0 0 24 24"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.3 3.438 9.8 8.207 11.387.6.113.793-.262.793-.583 0-.288-.012-1.243-.017-2.252-3.338.726-4.042-1.61-4.042-1.61-.546-1.387-1.333-1.756-1.333-1.756-1.09-.745.083-.73.083-.73 1.205.085 1.84 1.237 1.84 1.237 1.07 1.834 2.807 1.304 3.492.997.108-.775.418-1.305.762-1.606-2.665-.304-5.466-1.332-5.466-5.931 0-1.31.469-2.381 1.236-3.221-.124-.303-.535-1.523.117-3.176 0 0 1.008-.322 3.3 1.23a11.5 11.5 0 0 1 3.003-.404c1.02.005 2.047.138 3.003.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.873.119 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.804 5.625-5.475 5.921.43.37.823 1.102.823 2.222 0 1.606-.015 2.902-.015 3.293 0 .323.192.699.8.581C20.565 21.796 24 17.297 24 12c0-6.63-5.37-12-12-12z"/></svg>
         </a>
         <span className="text-base font-semibold text-gray-700 dark:text-gray-200">JosanglDev</span>
-        {/* LinkedIn */}
         <a href="https://www.linkedin.com/in/jos%C3%A9-antonio-garc%C3%ADa-l%C3%B3pez-4ba263347/" target="_blank" rel="noopener noreferrer" className="group">
           <svg className="w-7 h-7 fill-gray-600 dark:fill-gray-300 group-hover:fill-blue-500 transition" viewBox="0 0 24 24"><path d="M19 0h-14c-2.76 0-5 2.24-5 5v14c0 2.76 2.24 5 5 5h14c2.76 0 5-2.24 5-5v-14c0-2.76-2.24-5-5-5zm-11 19h-3v-10h3v10zm-1.5-11.28c-.97 0-1.75-.79-1.75-1.75s.78-1.75 1.75-1.75 1.75.78 1.75 1.75-.78 1.75-1.75 1.75zm15.5 11.28h-3v-5.6c0-1.34-.03-3.07-1.87-3.07-1.87 0-2.16 1.46-2.16 2.97v5.7h-3v-10h2.89v1.36h.04c.4-.75 1.38-1.54 2.84-1.54 3.04 0 3.6 2 3.6 4.59v5.59z"/></svg>
         </a>
