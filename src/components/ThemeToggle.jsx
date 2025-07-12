@@ -11,9 +11,6 @@ export default function ThemeToggle({ darkMode, setDarkMode }) {
       title="Alternar modo oscuro/claro"
     >
       {darkMode ? "🌙" : "☀️"}
-      <span className="tooltip">
-        {darkMode ? "Modo oscuro" : "Modo claro"}
-      </span>
     </button>
   );
 } 
