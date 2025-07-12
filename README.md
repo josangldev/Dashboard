@@ -2,7 +2,7 @@
 
 Este proyecto es una aplicación web moderna y responsive para gestionar tareas y visualizar la productividad semanal, desarrollada con **React**, **Vite**, **TailwindCSS** y **Recharts**.
 
-[🌐 Ver sitio en producción](https://dashboard-productividad.vercel.app/)
+[🌐 Ver sitio en producción](https://dashboard-sage-tau.vercel.app/)
 
 ---
 
