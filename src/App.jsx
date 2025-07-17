@@ -11,6 +11,7 @@ import SkeletonLoader from "./components/SkeletonLoader";
 import WeekNavigation from "./components/WeekNavigation";
 import { useTranslation } from 'react-i18next';
 
+// Componente Toast para mostrar mensajes temporales
 function Toast({ message, onClose }) {
   useEffect(() => {
     const t = setTimeout(onClose, 2000);
@@ -23,50 +24,72 @@ function Toast({ message, onClose }) {
   );
 }
 
+// Componente principal de la aplicación
 export default function App() {
+  // Estado y funciones principales de tareas
   const { tasks, addTask, toggleTask, deleteTask, editTask } = useTasks();
+  // Estado para el input de nueva tarea
   const [input, setInput] = useState("");
+  // Estado para edición de tareas
   const [editing, setEditing] = useState(null);
   const [editValue, setEditValue] = useState("");
+  // Estado para modo oscuro
   const [darkMode, setDarkMode] = useDarkMode();
+  // Estado para mostrar mensajes Toast
   const [toast, setToast] = useState(null);
+  // Estado de carga inicial
   const [loading, setLoading] = useState(true);
+  // Día seleccionado para mostrar tareas
   const [selectedDay, setSelectedDay] = useState(() => {
     const now = new Date();
     return new Date(now.getFullYear(), now.getMonth(), now.getDate());
   });
+  // Offset de la semana para navegación
   const [weekOffset, setWeekOffset] = useState(0);
+  // Traducción
   const { t, i18n } = useTranslation();
+  // Estado para mostrar el tutorial de bienvenida
   const [showWelcome, setShowWelcome] = useState(() => !localStorage.getItem('welcomeSeen'));
 
+  // Detecta si es móvil
   const isMobile = window.innerWidth < 640;
   const [mobileDayIndex, setMobileDayIndex] = useState(0);
 
+  // Marca el tutorial como visto
   useEffect(() => { if (!showWelcome) localStorage.setItem('welcomeSeen', '1'); }, [showWelcome]);
 
+  // Simula carga inicial
   useEffect(() => {
     const t = setTimeout(() => setLoading(false), 1200);
     return () => clearTimeout(t);
   }, []);
 
+  // Calcula el inicio de la semana según el offset
   const weekStart = useMemo(() => {
     const now = new Date();
     return addDays(startOfWeek(now, { weekStartsOn: 1 }), weekOffset * 7);
   }, [weekOffset]);
+  // Genera los días de la semana
   const daysOfWeek = useMemo(() => Array.from({ length: 7 }, (_, i) => addDays(weekStart, i)), [weekStart]);
+  // Datos para el gráfico de productividad
   const chartData = daysOfWeek.map(day => ({
     name: format(day, "EEEE", { locale: undefined }).slice(0, 3),
     completadas: tasks.filter(t => t.done && isSameDay(new Date(t.id), day)).length,
   }));
+  // Agrupa tareas por día
   const tasksByDay = daysOfWeek.map(day => ({
     date: day,
     name: format(day, "EEEE", { locale: es }).slice(0, 3),
     tasks: tasks.filter(t => isSameDay(new Date(t.id), day)),
   }));
+  // Tareas del día seleccionado
   const selectedDayTasks = tasks.filter(t => isSameDay(new Date(t.id), selectedDay));
+  // Número de tareas completadas
   const selectedDayDone = selectedDayTasks.filter(t => t.done).length;
+  // Porcentaje de progreso del día
   const progress = selectedDayTasks.length === 0 ? 0 : Math.round((selectedDayDone / selectedDayTasks.length) * 100);
 
+  // Si el día seleccionado no está en la semana actual, lo resetea
   useEffect(() => {
     const weekDays = Array.from({ length: 7 }, (_, i) => addDays(weekStart, i));
     const isSelectedInWeek = weekDays.some(day => isSameDay(day, selectedDay));
@@ -75,7 +98,9 @@ export default function App() {
     }
   }, [weekStart, selectedDay]);
 
+  // Muestra un mensaje Toast
   const showToast = (msg) => setToast(msg);
+  // Maneja la adición de una nueva tarea
   const handleAddTask = () => {
     if (input.trim() === "") return;
     const dateId = new Date(selectedDay).setHours(0,0,0,0);
@@ -83,10 +108,15 @@ export default function App() {
     setInput("");
     showToast("toastAdded");
   };
+  // Maneja el borrado de una tarea
   const handleDelete = (id) => { deleteTask(id); showToast("toastDeleted"); };
+  // Inicia la edición de una tarea
   const handleEdit = (id, title) => { setEditing(id); setEditValue(title); };
+  // Guarda la edición de una tarea
   const handleSave = (id) => { editTask(id, editValue); setEditing(null); setEditValue(""); showToast("toastEdited"); };
+  // Cancela la edición
   const handleCancel = () => { setEditing(null); setEditValue(""); };
+  // Alterna el estado de completado de una tarea
   const handleToggle = (id) => toggleTask(id);
 
   return (
